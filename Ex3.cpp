@@ -1,6 +1,4 @@
 #include <iostream>
-#include <vector>
-#include <map>
 #include <string>
 #include <stdio.h>
 #include <sndfile.h>
@@ -10,14 +8,17 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
 
-    if (argc != 3) cout << "Wrong arguments" << endl;
-
+    if (argc != 3){
+        cout << "Wrong arguments" << endl;
+        return 1;
+    }
+    
     SF_INFO inf;
     inf.format = 0;
     SNDFILE* inFile = sf_open(argv[1], SFM_READ, &inf);
 
-    cout << inf.frames << endl;
-    cout<<inf.channels<<endl;
+    cout << "Orignal Frames    : " << inf.frames << endl;
+    cout << "Original Channels : " << inf.channels << endl;
 
     inf.format = SF_FORMAT_WAV | SF_FORMAT_PCM_32;
 
@@ -25,13 +26,16 @@ int main(int argc, char *argv[]) {
     
     int readCount;
     float ptr[inf.frames*inf.channels];
+    int framesCopied=0;
     while((readCount = (int) sf_readf_float (inFile, ptr, 1)) > 0){
-        cout<<readCount<<endl;
         sf_writef_float (outFile, ptr, readCount);
+        framesCopied++;
     }
 
     sf_close(inFile);
     sf_close(outFile);
+
+    cout << "Frames Copied     : " << framesCopied << endl;
 
     return 0;
 }
