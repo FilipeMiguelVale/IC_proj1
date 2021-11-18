@@ -1,7 +1,11 @@
+#include <cstring>
 #include <iostream>
+#include <fstream>
 #include<stdio.h>
 #include<stdlib.h>
 #include<string>
+
+using namespace std;
 
 typedef struct {
     unsigned char red,green,blue;
@@ -12,7 +16,6 @@ typedef struct {
     PPMPixel *data;
 } PPMImage;
 
-#define CREATOR "Filipe"
 #define RGB_COMPONENT_COLOR 255
 
 static PPMImage *readPPM(const char *filename)
@@ -95,7 +98,13 @@ void writePPM(const char *filename, PPMImage *img)
 {
     FILE *fp;
     //open file for output
-    fp = fopen(filename, "wb");
+    std::string t = filename;
+    std::string tmp = t + ".ppm";
+    int n = tmp.length();
+    char char_array[n + 1];
+
+    strcpy(char_array, tmp.c_str());
+    fp = fopen(char_array, "wb");
     if (!fp) {
         fprintf(stderr, "Unable to open file '%s'\n", filename);
         exit(1);
@@ -105,8 +114,6 @@ void writePPM(const char *filename, PPMImage *img)
     //image format
     fprintf(fp, "P6\n");
 
-    //comments
-    fprintf(fp, "# Created by %s\n",CREATOR);
 
     //image size
     fprintf(fp, "%d %d\n",img->x,img->y);
@@ -119,18 +126,6 @@ void writePPM(const char *filename, PPMImage *img)
     fclose(fp);
 }
 
-void changeColorPPM(PPMImage *img)
-{
-    int i;
-    if(img){
-
-        for(i=0;i<img->x*img->y;i++){
-            img->data[i].red=RGB_COMPONENT_COLOR-img->data[i].red;
-            img->data[i].green=RGB_COMPONENT_COLOR-img->data[i].green;
-            img->data[i].blue=RGB_COMPONENT_COLOR-img->data[i].blue;
-        }
-    }
-}
 
 int main(int argc, char** argv){
 
@@ -144,8 +139,7 @@ int main(int argc, char** argv){
     }
     PPMImage *image;
     image = readPPM(argv[1]);
-    //changeColorPPM(image);
-    writePPM(argv[1],image);
-    printf("Press any key...");
-    getchar();
+
+    writePPM(argv[2],image);
+
 }
