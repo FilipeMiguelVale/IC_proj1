@@ -20,15 +20,13 @@ int main(int argc, char *argv[]) {
     cout << "Orignal Frames    : " << inf.frames << endl;
     cout << "Original Channels : " << inf.channels << endl;
 
-    inf.format = SF_FORMAT_WAV | SF_FORMAT_PCM_32;
-
     SNDFILE* outFile = sf_open(argv[2], SFM_WRITE, &inf);
     
     int readCount;
     float ptr[inf.frames*inf.channels];
     int framesCopied=0;
     while((readCount = (int) sf_readf_float (inFile, ptr, 1)) > 0){
-        sf_writef_float (outFile, ptr, readCount);
+        sf_writef_float(outFile, ptr, readCount);
         framesCopied++;
     }
 

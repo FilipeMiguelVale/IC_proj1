@@ -54,7 +54,7 @@ int main(int argc, char *argv[]){
         H_mono[avg]+=1;
     }
 
-    cout << "---------------- LEFT CHANNEL ----------------" << endl;
+    cout << "---------------- LEFT CHANNEL  ----------------" << endl;
     
     double entr=0;
     double p=0;
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]){
         // cout << endl;
 
         p=(double)H_left_channel[it->first]/(inf.frames);
-        entr+=p*log(p);
+        entr+=-p*log(p);
     }
 
     cout << entr << endl;
@@ -82,12 +82,12 @@ int main(int argc, char *argv[]){
         // cout << endl;
 
         p=(double)H_right_channel[it->first]/(inf.frames);
-        entr+=p*log(p);
+        entr+=-p*log(p);
     }
 
     cout << entr << endl;
 
-    cout << "---------------- MONO ----------------" << endl;
+    cout << "----------------     MONO      ----------------" << endl;
 
     entr=0;
     for(it=H_mono.begin(); it!=H_mono.end();it++){
@@ -98,7 +98,7 @@ int main(int argc, char *argv[]){
         // cout << endl;
         
         p=(double)H_mono[it->first]/(inf.frames);
-        entr+=p*log(p);
+        entr+=-p*log(p);
     }
 
     cout << entr << endl;
