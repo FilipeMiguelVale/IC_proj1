@@ -210,8 +210,8 @@ double entropy_calc(Histogram hist,PPMImage *img){
 PPMImage* reducer(double entropy,PPMImage *img){
     int nbits = 8 -(int)round(entropy);
     cout << "nbits = "+to_string(nbits)<<endl;
-
-    for( int i = 0; i < 256; i++ )
+    int size = img->x*img->y;
+    for( int i = 0; i < size; i++ )
     {
         img->data[i].red=(img->data[i].red >> nbits) << nbits;
         img->data[i].green=(img->data[i].green >> nbits) << nbits;
