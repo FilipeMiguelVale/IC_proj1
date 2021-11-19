@@ -4,8 +4,16 @@
 using namespace std;
 
 int main(int argc, char *argv[]){
-    if (argc != 3){
+    if (argc != 4){
         cout << "Wrong arguments" << endl;
+        cout << "usage PROG_NAME INPUT_FILE OUTPUT_FILE N_BITS" << endl;
+        return 1;
+    }
+
+    int nbits=stoi(argv[3]);
+    cout << nbits << endl;
+    if (0 < nbits && nbits < 15){
+        cout << "N_BITS must be between 0 and 16" << endl;
         return 1;
     }
 
@@ -17,8 +25,8 @@ int main(int argc, char *argv[]){
     int readCount;
     short ptr[inf.frames*inf.channels];
     while((readCount = (int) sf_readf_short(inFile, ptr, 1)) > 0){
-        ptr[0]=(ptr[0] >> 10) << 10;
-        ptr[1]=(ptr[1] >> 10) << 10;
+        ptr[0]=(ptr[0] >> nbits) << nbits;
+        ptr[1]=(ptr[1] >> nbits) << nbits;
         sf_writef_short(outFile, ptr, readCount);
     }
 
