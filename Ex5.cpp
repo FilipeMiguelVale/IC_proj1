@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <fstream>
 #include <string.h>
+#include <math.h>
+#include <iostream>
 
 using namespace std;
 
@@ -10,7 +12,6 @@ int main(int argc, char *argv[]) {
 
     int num_words = 0;         // Total number of words
     int num_chars = 0;         // Total number of characters (including underscores)
-    int num_underscores = 0;   // Total number of underscores
     int in_word = 0;           // Are we currently inside a word?
     string line;
     ifstream myfile (argv[1]);
@@ -29,12 +30,6 @@ int main(int argc, char *argv[]) {
                     num_words++;
                 }
             }
-            else if( line[i] == '_' )
-            {
-                counts[line[i]]++;
-                num_underscores++;
-                in_word = 0;
-            }
             else {
                 in_word = 0;
             }      
@@ -43,7 +38,7 @@ int main(int argc, char *argv[]) {
     
     printf( "Word total: %d\n", num_words );
     printf( "Character total: %d\n", num_chars );
-    printf( "Character total omitting underscore: %d\n", num_chars - num_underscores );
+    
 
     for( int i = 0; i < 256; i++ )  // Yes, this loop range is excessive...
     {
@@ -52,4 +47,17 @@ int main(int argc, char *argv[]) {
         for( int x = 0; x < counts[i]; x++ ) fputc('*', stdout);
         printf( " (%d)\n", counts[i] );
     }
+
+    double entropy=0;
+    double p=0;
+    for(int i=0;i<=23;i++){
+        if (counts[line[i]] != 0) {
+        p=(double) counts[line[i]]/sizeof(line);   //probability of the element
+        entropy+=p*log(p);  //entropy=-(sum(p*log(p)))
+        }
+    }
+
+    printf("Histogram Entropy->  %f \n", entropy*-1);
+        
+    return 1;
 }

@@ -4,19 +4,14 @@
 
 using namespace std;
 
-int main() {
+int main(int argc, char * argv[]) {
     string in;
     string out;
     vector<char> bytes;
     char byte = 0;
     
-    cout << "Que ficheiro quer ler?" << endl;
-    cin >> in;
-    cout << "Nome de ficheiro final" << endl;
-    cin >> out;
-    
-    ifstream ifs(in);
-    ofstream ofs(out);
+    ifstream ifs(argv[1]);
+    ofstream ofs(argv[2]);
 
     string line;
     while(ifs.get(byte)){
