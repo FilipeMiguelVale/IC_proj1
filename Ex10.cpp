@@ -1,35 +1,46 @@
 #include <iostream>
 #include <sndfile.h>
 #include <cmath>
+#include <cstring>
 
 using namespace std;
 
 int main(int argc, char *argv[]){
     if (argc != 3){
         cout << "Wrong arguments" << endl;
-        cout << "usage PROG_NAME ORIGNAL_FILE COPIED_FILE N_BITS" << endl;
+        cout << "usage PROG_NAME ORIGNAL_FILE QUANTIZED_FILE" << endl;
         return 1;
     }
 
-    int nbits=atoi(argv[2]);
-    cout << nbits << endl;
-    if ((nbits < 0) && (nbits > 15)){
-        cout << "N_BITS must be between 0 and 16" << endl;
-        return 1;
+    SF_INFO ogInf;
+    ogInf.format = 0;
+    SNDFILE* ogFile = sf_open(argv[1], SFM_READ, &ogInf);
+    SF_INFO cpInf;
+    cpInf.format = 0;
+    SNDFILE* cpFile = sf_open(argv[2], SFM_READ, &cpInf);
+
+    int readCount=0;
+    short ptr1[ogInf.channels];
+    short ptr2[cpInf.channels];
+    double sumMSE=0;
+
+    double sumAVG=0;
+    double peak=0;
+    while((readCount = (int) sf_readf_short(ogFile, ptr1, 1)) > 0){
+        sf_readf_short(cpFile, ptr2, 1);
+        sumAVG+=(ptr1[0]+ptr1[1])/2;
+        sumMSE += pow(((ptr1[0]+ptr1[1])/2) - ((ptr2[0]+ptr2[1])/2), 2);
+        if(abs(((ptr1[0]+ptr1[1])/2) - ((ptr2[0]+ptr2[1])/2)) > peak) peak=abs(((ptr1[0]+ptr1[1])/2) - ((ptr2[0]+ptr2[1])/2));
     }
 
-    SF_INFO inf;
-    inf.format = 0;
-    SNDFILE* inFile = sf_open(argv[1], SFM_READ, &inf);
+    double mse = sumMSE/(ogInf.frames*ogInf.channels);
+    cout << "MEAN SQUARED ERROR : " << mse << endl;
 
-    double delta=2/pow(2, (16-nbits));
-    double maximum_error=delta/2;
+    double avg=sumAVG/ogInf.frames;
+    double snr = pow(avg, 2)/mse;
+    cout << "SNR          : " << 10*log10(snr) << endl;
 
-    cout << "MAXIMUM ERROR: " << maximum_error << endl;
-
-    double snr=6.02*(16-nbits);
-
-    cout << "SNR          : " << snr << endl;
+    cout << "MAX ERROR : " << peak << endl;
 
     return 0;
 }

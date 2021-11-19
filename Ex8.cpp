@@ -12,7 +12,7 @@ int main(int argc, char *argv[]){
 
     int nbits=stoi(argv[3]);
     cout << nbits << endl;
-    if (0 < nbits && nbits < 15){
+    if (0 > nbits && nbits > 15){
         cout << "N_BITS must be between 0 and 16" << endl;
         return 1;
     }
