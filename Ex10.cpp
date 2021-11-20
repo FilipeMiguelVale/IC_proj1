@@ -22,8 +22,8 @@ int main(int argc, char *argv[]){
     int readCount=0;
     short ptr1[ogInf.channels];
     short ptr2[cpInf.channels];
+    
     double sumMSE=0;
-
     double sumAVG=0;
     double peak=0;
     while((readCount = (int) sf_readf_short(ogFile, ptr1, 1)) > 0){
